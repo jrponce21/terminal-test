@@ -39,8 +39,8 @@ class App extends Component {
     this.state = {
       title: "Catalog Viewer",
       catalogs: [...catalogs],
-      currentIndex: -1,
-      catalogSelected: catalogs[3],
+      currentIndex: 0,
+      catalogSelected: catalogs[0],
       slideActive: false,
       slideTimer: null,
       slideDuration: 3000,
@@ -70,6 +70,7 @@ class App extends Component {
       currentIndex: posIndex,
       catalogSelected: catalogs[posIndex],
     });
+    this.resetSlideTimer();
   }
 
   nextClick() {
@@ -79,13 +80,42 @@ class App extends Component {
       currentIndex: posIndex,
       catalogSelected: catalogs[posIndex],
     });
+    this.resetSlideTimer();
   }
 
-  slideChange(event) {}
+  slideChange() {
+    const isSlideActive = this.state.slideActive;
+    const myInterval = isSlideActive
+      ? null
+      : setInterval(() => this.onSlideChange(), this.state.slideDuration);
+    this.setState(
+      {
+        slideActive: !isSlideActive,
+        slideTimer: myInterval,
+      },
+      () => !this.state.slideActive && clearInterval(this.state.slideTimer)
+    );
+  }
 
-  resetSlideTimer(isActive = false) {}
+  resetSlideTimer() {
+    clearInterval(this.state.slideTimer);
+    const isSlideActive = this.state.slideActive;
+    const newInterval = isSlideActive
+      ? null
+      : setInterval(() => this.onSlideChange(), this.state.slideDuration);
+    this.setState({
+      slideTimer: newInterval,
+    });
+  }
 
-  onSlideChange() {}
+  onSlideChange() {
+    const currentIndex = this.state.currentIndex;
+    const posIndex = (currentIndex + 1) % this.state.catalogs.length;
+    this.setState({
+      currentIndex: posIndex,
+      catalogSelected: catalogs[posIndex],
+    });
+  }
 
   render() {
     return (
@@ -127,6 +157,7 @@ class App extends Component {
           <div className="slide-input">
             <input
               type="checkbox"
+              checked={this.state.slideActive}
               onChange={this.slideChange}
               className="test"
               data-testid="slide"
