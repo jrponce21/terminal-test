@@ -62,7 +62,10 @@ class App extends Component {
 
   previousClick() {
     const currentIndex = this.state.currentIndex;
-    const posIndex = (currentIndex - 1) % this.state.catalogs.length;
+    const catalogIndex = !currentIndex
+      ? this.state.catalogs.length
+      : currentIndex;
+    const posIndex = (catalogIndex - 1) % this.state.catalogs.length;
     this.setState({
       currentIndex: posIndex,
       catalogSelected: catalogs[posIndex],
@@ -71,7 +74,7 @@ class App extends Component {
 
   nextClick() {
     const currentIndex = this.state.currentIndex;
-    const posIndex = (currentIndex - 1) % this.state.catalogs.length;
+    const posIndex = (currentIndex + 1) % this.state.catalogs.length;
     this.setState({
       currentIndex: posIndex,
       catalogSelected: catalogs[posIndex],
