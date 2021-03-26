@@ -85,27 +85,33 @@ class App extends Component {
 
   slideChange() {
     const isSlideActive = this.state.slideActive;
-    const myInterval = isSlideActive
-      ? null
-      : setInterval(() => this.onSlideChange(), this.state.slideDuration);
-    this.setState(
-      {
-        slideActive: !isSlideActive,
-        slideTimer: myInterval,
-      },
-      () => !this.state.slideActive && clearInterval(this.state.slideTimer)
-    );
+    if (!isSlideActive)
+      this.setState({
+        slideActive: true,
+        slideTimer: setInterval(
+          () => this.onSlideChange(),
+          this.state.slideDuration
+        ),
+      });
+    else {
+      clearInterval(this.state.slideTimer);
+      this.setState({
+        slideActive: false,
+        slideTimer: null,
+      });
+    }
   }
 
   resetSlideTimer() {
-    clearInterval(this.state.slideTimer);
-    const isSlideActive = this.state.slideActive;
-    const newInterval = isSlideActive
-      ? null
-      : setInterval(() => this.onSlideChange(), this.state.slideDuration);
-    this.setState({
-      slideTimer: newInterval,
-    });
+    if (this.state.slideActive) {
+      clearInterval(this.state.slideTimer);
+      this.setState({
+        slideTimer: setInterval(
+          () => this.onSlideChange(),
+          this.state.slideDuration
+        ),
+      });
+    }
   }
 
   onSlideChange() {
